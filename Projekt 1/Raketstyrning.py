@@ -12,6 +12,7 @@ g = np.array([0, (-9.82)])
 c = 0.05
 km = 700
 stoppos = np.array([80, 60])
+k_p = 0.3
 
 
 y0 = np.array([0, 0, 0, 0])
@@ -20,9 +21,10 @@ def oderhs(t, y):
     m_val = m(t)
     x, y, vx, vy = y
     pos = [x, y]
-    f = F(m_val, np.array([vx, vy]))
+    vel = np.array([vx, vy])
+    f = F(m_val, vel)
     mp = mprime(t)
-    u = U(t, pos)
+    u = U(t, pos, vel)
     dxdt = vx
     dydt = vy
     dvxdt, dvydt =(f + mp*u) /m_val
@@ -47,8 +49,8 @@ def mprime(t):
     else: 
         return 0
 
-def U(t, pos):
-    theta = phi(t, pos)
+def U(t, pos, vel):
+    theta = phioptimized(t, pos, vel)
     return np.array([km * np.cos(theta), km * np.sin(theta)], dtype=np.float64)
 
 def phi(t, pos):
@@ -62,6 +64,17 @@ def v(t):
          return np.array([0, 0])
     else: 
         return np.array([10, 0])
+    
+def phioptimized(t, pos, vel):
+    if pos[1] <= 20:
+        return math.pi/2
+    target_direction = np.arctan2(stoppos[0] - pos[1], stoppos[1] - pos[0])  
+    current_direction = np.arctan2(vel[0], vel[1])
+    
+    angle_diff = target_direction - current_direction
+    new_angle = current_direction + k_p * angle_diff
+    
+    return new_angle
 
 
 t_span = (0, 50)
@@ -80,7 +93,23 @@ for i in range(sol.y[0].size):
     if dist < min_distance:
         min_distance = dist
     
-       
+total_min = 50
+k = 5
+for i in range(10, 20):
+    
+    k_p = i/10
+    sol = solve_ivp(oderhs, t_span, y0, t_eval=t_eval)
+    for i in range(sol.y[0].size):
+        dist = math.sqrt((sol.y[0][i] - stoppos[0])**2 + (sol.y[1][i] -  stoppos[1])**2)
+        if dist < min_distance:
+            min_distance = dist
+    if(min_distance < total_min):
+        total_min = min_distance
+        k = k_p
+        
+    
+    
+print(k)
 print(min_distance)
 #Value for unoptimized distance of target: 8.53166
 
