@@ -31,11 +31,11 @@ def u(t, phi):
 def phi(t):
         return 0
     
-def v(t):
-    if t == 0:
-        return np.array(0, 0)
-    else: 
-        
+# def v(t):
+#     if t == 0:
+#         return np.array(0, 0)
+#     else: 
+#         
     
     
     
