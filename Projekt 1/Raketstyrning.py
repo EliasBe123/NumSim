@@ -111,8 +111,8 @@ def RK4(f, tspan, u0, dt, *args):
     u[0,:] = u0
     for i in range(len(t_vec) - 1): #RK algorithm
         k1 = np.array(f(t_vec[i], u[i, :], *args))
-        k2 = np.array(f(t_vec[i] + dt_vec[i] / 2, u[i, :] + dt_vec[i] / 2 * k1, *args))
-        k3 = np.array(f(t_vec[i] + dt_vec[i] / 2, u[i, :] + dt_vec[i] / 2 * k2, *args))
+        k2 = np.array(f(t_vec[i] + dt_vec[i], u[i, :] + dt_vec[i] * k1, *args))
+        k3 = np.array(f(t_vec[i] + dt_vec[i], u[i, :] + dt_vec[i] * k2, *args))
         k4 = np.array(f(t_vec[i] + dt_vec[i], u[i, :] + dt_vec[i] * k3, *args))
         u[i+1, :] = u[i, :] + (dt_vec[i] / 6) * (k1 + 2 * k2 + 2 * k3 + k4)
         #Return t, x pos and y pos of rocket

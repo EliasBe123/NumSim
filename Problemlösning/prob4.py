@@ -9,6 +9,8 @@ import numpy as np
 
 import matplotlib.pyplot as plt
 from scipy.optimize import fsolve
+from scipy.integrate import solve_ivp
+
 
 
 def impliciteuler(f, tspan, u0, dt, *args):
@@ -32,12 +34,13 @@ def ode_rhs(t, y):
     return np.sin(t) - y
 
 
-
 t_span = (0, 10)
 t_eval = np.linspace(0, 10, 1000)
 y0 = [0]
-sol = impliciteuler(ode_rhs, t_span, y0, 0.1)
+sol = RK(ode_rhs, t_span, y0, 0.1)
+
 
 plt.plot(sol[0], sol[1])
+
 
 plt.show()
