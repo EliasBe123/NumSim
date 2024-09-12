@@ -1,21 +1,19 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Sep  9 13:32:50 2024
-
-"""
 import numpy as np
 from scipy.integrate import solve_ivp
 import math
 import matplotlib.pyplot as plt
+
 g = np.array([0, (-9.82)])
 c = 0.05
 km = 700
-stoppos = np.array([80, 60])
-k_p = 0.93 #Gotten through trial and error
-
+destination = np.array([80, 60])
+k_p = 0.93 # Gotten through trial and error
 
 y0 = np.array([0, 0, 0, 0])
+
+def F(m, v):
+    f = m*g - c * np.linalg.norm(v) * v
+    return f
 
 def oderhs(t, y):
     m_val = m(t)
@@ -31,12 +29,6 @@ def oderhs(t, y):
     
     return [dxdt, dydt, dvxdt, dvydt]
 
-
-def F(m, v):
-
-    f = m*g - c * np.linalg.norm(v) * v
-    return f
-
 def m(t):
     if t <= 10:
         return 8-0.4*t
@@ -50,25 +42,26 @@ def mprime(t):
         return 0
 
 def U(t, pos, vel):
-    theta = phioptimized(t, pos, vel)
+    theta = thetaoptimized(t, pos, vel)
     return np.array([km * np.cos(theta), km * np.sin(theta)], dtype=np.float64)
 
-def phi(t, pos):
-        if pos[1]<= 20:
-            return math.pi/2
-        else:
-            return np.arctan2(stoppos[1]-pos[1], stoppos[0]-pos[0])
-    
 def v(t):
     if t == 0:
          return np.array([0, 0])
     else: 
-        return np.array([10, 0])
+        return np.array([10, 0])    
+
+# def theta(t, pos): # Replaced by thetaoptimized
+#     if pos[1]<= 20:
+#         return math.pi/2
+#     else:
+#         return np.arctan2(destination[1]-pos[1], destination[0]-pos[0])
     
-def phioptimized(t, pos, vel):
+def thetaoptimized(t, pos, vel):
     if pos[1] <= 20:
         return math.pi/2
-    target_direction = np.arctan2(stoppos[1] - pos[1], stoppos[0] - pos[0])  
+    
+    target_direction = np.arctan2(destination[1] - pos[1], destination[0] - pos[0])  
     current_direction = np.arctan2(vel[0], vel[1])
     
     angle_diff = target_direction - current_direction
@@ -76,33 +69,30 @@ def phioptimized(t, pos, vel):
     
     return new_angle
 
+t0 = 0
+t1 = 50
 
-t_span = (0, 50)
-t_eval = np.linspace(0, 50, 1000)
+tspan = (t0, t1)
+tt = np.arange(t0, t1, 0.1)
 
-sol = solve_ivp(oderhs, t_span, y0, t_eval=t_eval)
+sol = solve_ivp(oderhs, tspan, y0, t_eval=tt)
 
 plt.plot(sol.y[0], sol.y[1], label='x-position')
-plt.plot(stoppos[0], stoppos[1], "ro")
+plt.plot(destination[0], destination[1], "ro")
 
-plt.ylim(0, 100)
-min_distance = 10000 
+plt.ylim(0, 100) # Negative height is not possible and thus irrelevant
+
+min_distance = 10000 # Large number to ensure that the first distance is smaller
+print(min_distance) 
 for i in range(sol.y[0].size):
-    dist = math.sqrt((sol.y[0][i] - stoppos[0])**2 + (sol.y[1][i] -  stoppos[1])**2)
+    dist = math.sqrt((sol.y[0][i] - destination[0])**2 + (sol.y[1][i] -  destination[1])**2)
+
     if dist < min_distance:
         min_distance = dist
     
 print(min_distance)
-#Value for unoptimized distance of target: 8.53166
-#With optimized: 0.3967
-
+# Value for unoptimized distance of target: 8.53166
+# With optimized: 0.3967
 
 plt.grid(True)
 plt.show()
-
-         
-         
-    
-    
-    
-    
