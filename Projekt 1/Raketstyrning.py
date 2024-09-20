@@ -14,7 +14,6 @@ km = 700
 stoppos = np.array([80, 60])
 k_p = 0.93 #Gotten through trial and error
 
-
 y0 = np.array([0, 0, 0, 0])
 
 def oderhs(t, y):
@@ -30,7 +29,6 @@ def oderhs(t, y):
     dvxdt, dvydt =(f + mp*u) /m_val
     
     return [dxdt, dydt, dvxdt, dvydt]
-
 
 def F(m, v):
 
@@ -79,10 +77,8 @@ def thetaopt(t, pos, vel):
     
     return new_angle
     
-    
 t_span = (0, 50)
 t_eval = np.linspace(0, 50, 1000)
-
 sol = solve_ivp(oderhs, t_span, y0, t_eval=t_eval)
 
 
@@ -94,8 +90,8 @@ for i in range(sol.y[0].size):
         min_distance = dist
     
 print("Minimum Distance with solve_ivp(optimized trajectory): ", min_distance)
-#Value for unoptimized distance of target: 8.53166
-#With optimized: 0.3967
+#Value for unoptimized distance of target:6.383
+#With optimized: 0.339
 
 
 # RUNGE-KUTTA 4:
@@ -111,8 +107,8 @@ def RK4(f, tspan, u0, dt, *args):
     u[0,:] = u0
     for i in range(len(t_vec) - 1): #RK algorithm
         k1 = np.array(f(t_vec[i], u[i, :], *args))
-        k2 = np.array(f(t_vec[i] + dt_vec[i], u[i, :] + dt_vec[i] * k1, *args))
-        k3 = np.array(f(t_vec[i] + dt_vec[i], u[i, :] + dt_vec[i] * k2, *args))
+        k2 = np.array(f(t_vec[i] + dt_vec[i] / 2, u[i, :] + dt_vec[i] / 2 * k1, *args))
+        k3 = np.array(f(t_vec[i] + dt_vec[i] / 2, u[i, :] + dt_vec[i] / 2 * k2, *args))
         k4 = np.array(f(t_vec[i] + dt_vec[i], u[i, :] + dt_vec[i] * k3, *args))
         u[i+1, :] = u[i, :] + (dt_vec[i] / 6) * (k1 + 2 * k2 + 2 * k3 + k4)
         #Return t, x pos and y pos of rocket
@@ -134,10 +130,3 @@ plt.plot(stoppos[0], stoppos[1], "ro", label="Target")
 plt.legend()
 plt.grid(True)
 plt.show()
-
-         
-         
-    
-    
-    
-    
