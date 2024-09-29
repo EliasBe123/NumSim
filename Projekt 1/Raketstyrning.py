@@ -11,7 +11,7 @@ g = np.array([0, (-9.81)])
 c = 0.05
 km = 700
 stoppos = np.array([80, 60])
-k_p = 0.925 # Gotten through trial and error
+k_p = 0.894 # Gotten through trial and error
 
 y0 = np.array([0, 0, 0, 0])
 
@@ -94,11 +94,10 @@ t_eval = np.arange(t_span[0], t_span[1], 0.01)
 #     sol = solve_ivp(oderhs, t_span, y0, t_eval=t_eval)
 
 #     min_distance = calculate_min_distance(stoppos, sol.y[0], sol.y[1])
-    
-#     print("Minimum Distance with solve_ivp(optimized trajectory): ", min_distance)
-#     print("k_p: ", k_p)
 
 #     if min_distance < min_distance2 or min_distance2 < 0:
+#         print("Minimum Distance with solve_ivp(optimized trajectory): ", min_distance)
+#         print("k_p: ", k_p)
 #         min_distance2 = min_distance
 #         best_k_p = k_p
 #     k_p -= 0.001
