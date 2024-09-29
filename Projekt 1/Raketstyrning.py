@@ -11,7 +11,7 @@ g = np.array([0, (-9.81)])
 c = 0.05
 km = 700
 stoppos = np.array([80, 60])
-k_p = 0.7 # Gotten through trial and error
+k_p = 0.925 # Gotten through trial and error
 
 y0 = np.array([0, 0, 0, 0])
 
@@ -25,7 +25,7 @@ def oderhs(t, y):
     u = U(t, pos, vel)
     dxdt = vx
     dydt = vy
-    dvxdt, dvydt =(f + mp*u) /m_val
+    dvxdt, dvydt = (f + mp*u) /m_val
     
     return [dxdt, dydt, dvxdt, dvydt]
 
@@ -68,7 +68,7 @@ def thetaopt(t, pos, vel):
     if pos[1] <= 20:
         return np.pi/2
     target_direction = np.arctan2(stoppos[1] - pos[1], stoppos[0] - pos[0])  
-    current_direction = np.arctan2(vel[1], vel[0])
+    current_direction = np.arctan2(vel[0], vel[1])
     
     angle_diff = target_direction - current_direction
     new_angle = current_direction + k_p * angle_diff
