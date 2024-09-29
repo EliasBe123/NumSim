@@ -50,10 +50,10 @@ def U(t, pos, vel):
     return np.array([km * np.cos(theta), km * np.sin(theta)])
 
 def theta(t, pos):
-        if pos[1]<= 20:
-            return np.pi/2
-        else:
-            return np.arctan2(stoppos[1]-pos[1], stoppos[0]-pos[0])
+    if pos[1]<= 20:
+        return np.pi/2
+    else:
+        return np.arctan2(stoppos[1]-pos[1], stoppos[0]-pos[0])
     
 def v(t):
     if t == 0:
@@ -78,8 +78,9 @@ def thetaopt(t, pos, vel):
 def calculate_min_distance(destination, x_values, y_values):
     return np.min(np.sqrt((x_values - destination[0])**2 + (y_values - destination[1])**2))
 
-t_span = (0, 50)
-t_eval = np.arange(t_span[0], t_span[1], 0.01)
+epsilon = +1.e-14
+t0, t1 = t_span = (0, 50)
+t_eval = np.arange(t0, t1+epsilon, 0.01)
 
 # Code used to find best k_p value
 # min_distance = -1
@@ -112,21 +113,21 @@ print("Minimum Distance with solve_ivp(optimized trajectory): ", min_distance)
 
 # RUNGE-KUTTA 4:
 def RK4(f, tspan, u0, dt, *args):
-    t1, t2 = tspan #Find start of and end of span
-    t_vec = np.arange(t1, t2+1.e-14,dt) #Create vector for t 
-    dt_vec = dt*np.ones_like(t_vec) #Create vector for steplength, so we can add one to the end
+    t1, t2 = tspan # Find start of and end of span
+    t_vec = np.arange(t1, t2+epsilon,dt) # Create vector for t 
+    dt_vec = dt*np.ones_like(t_vec) # Create vector for steplength, so we can add one to the end
     if t_vec[-1] < tspan[1]: 
         t_vec = np.append(t_vec,tspan[1])
         dt_vec = np.append(dt_vec, t_vec[-1]-t_vec[-2])
-    u = np.zeros((len(t_vec),len(u0))) #create array of 0's for solution
+    u = np.zeros((len(t_vec),len(u0))) # Create array of 0's for solution
     u[0,:] = u0
-    for i in range(len(t_vec) - 1): #RK algorithm
+    for i in range(len(t_vec) - 1): # RK algorithm
         k1 = np.array(f(t_vec[i], u[i, :], *args))
         k2 = np.array(f(t_vec[i] + dt_vec[i] / 2, u[i, :] + dt_vec[i] / 2 * k1, *args))
         k3 = np.array(f(t_vec[i] + dt_vec[i] / 2, u[i, :] + dt_vec[i] / 2 * k2, *args))
         k4 = np.array(f(t_vec[i] + dt_vec[i], u[i, :] + dt_vec[i] * k3, *args))
         u[i+1, :] = u[i, :] + (dt_vec[i] / 6) * (k1 + 2 * k2 + 2 * k3 + k4)
-        #Return t, x pos and y pos of rocket
+        # Return t, x pos and y pos of rocket
     return u[:, 0], u[:, 1]
 
 RK_x, RK_y = RK4(oderhs, t_span, y0, 0.01)
