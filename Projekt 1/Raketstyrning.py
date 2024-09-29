@@ -6,13 +6,12 @@ Created on Mon Sep  9 13:32:50 2024
 """
 import numpy as np
 from scipy.integrate import solve_ivp
-import math
 import matplotlib.pyplot as plt
-g = np.array([0, (-9.82)])
+g = np.array([0, (-9.81)])
 c = 0.05
 km = 700
 stoppos = np.array([80, 60])
-k_p = 0.93 #Gotten through trial and error
+k_p = 0.925 # Gotten through trial and error
 
 y0 = np.array([0, 0, 0, 0])
 
@@ -31,7 +30,6 @@ def oderhs(t, y):
     return [dxdt, dydt, dvxdt, dvydt]
 
 def F(m, v):
-
     f = m*g - c * np.linalg.norm(v) * v
     return f
 
@@ -53,7 +51,7 @@ def U(t, pos, vel):
 
 def theta(t, pos):
         if pos[1]<= 20:
-            return math.pi/2
+            return np.pi/2
         else:
             return np.arctan2(stoppos[1]-pos[1], stoppos[0]-pos[0])
     
@@ -68,7 +66,7 @@ def v(t):
 # k_p (experimented to find).
 def thetaopt(t, pos, vel):
     if pos[1] <= 20:
-        return math.pi/2
+        return np.pi/2
     target_direction = np.arctan2(stoppos[1] - pos[1], stoppos[0] - pos[0])  
     current_direction = np.arctan2(vel[0], vel[1])
     
@@ -83,10 +81,10 @@ sol = solve_ivp(oderhs, t_span, y0, t_eval=t_eval)
 
 
 plt.ylim(0, 100)
-min_distance = 10000 
+min_distance = -1 # Negative length is impossible, used to set if first distance
 for i in range(sol.y[0].size):
-    dist = math.sqrt((sol.y[0][i] - stoppos[0])**2 + (sol.y[1][i] -  stoppos[1])**2)
-    if dist < min_distance:
+    dist = np.sqrt((sol.y[0][i] - stoppos[0])**2 + (sol.y[1][i] -  stoppos[1])**2)
+    if dist < min_distance or min_distance < 0:
         min_distance = dist
     
 print("Minimum Distance with solve_ivp(optimized trajectory): ", min_distance)
@@ -95,7 +93,6 @@ print("Minimum Distance with solve_ivp(optimized trajectory): ", min_distance)
 
 
 # RUNGE-KUTTA 4:
-
 def RK4(f, tspan, u0, dt, *args):
     t1, t2 = tspan #Find start of and end of span
     t_vec = np.arange(t1, t2+1.e-14,dt) #Create vector for t 
@@ -114,19 +111,20 @@ def RK4(f, tspan, u0, dt, *args):
         #Return t, x pos and y pos of rocket
     return t_vec, u[:, 0], u[:, 1]
 
-RK_t, RK_x, RK_y = RK4(oderhs, t_span, y0, 0.1)
+RK_t, RK_x, RK_y = RK4(oderhs, t_span, y0, 0.01)
 
 #Check efficiency of trajectory through minimum distance between target and rocket
-min_distance = 10000 
-for i in range(len(RK_x)-1):
-    dist = math.sqrt((RK_x[i] - stoppos[0])**2 + (RK_y[i] -  stoppos[1])**2)
-    if dist < min_distance:
+min_distance = -1 # Negative length is impossible, used to set if first distance
+for i in range(RK_x.size):
+    dist = np.sqrt((RK_x[i] - stoppos[0])**2 + (RK_y[i] -  stoppos[1])**2)
+    if dist < min_distance or min_distance < 0:
         min_distance = dist
+
 print("Minimum Ddistance with own RK4(optimized trajectory)", min_distance)
 
 plt.plot(sol.y[0], sol.y[1], label='solve_ivp (RK45)')
 plt.plot(RK_x, RK_y, '--', label="RK4 solution")
 plt.plot(stoppos[0], stoppos[1], "ro", label="Target")
 plt.legend()
-plt.grid(True)
+plt.grid()
 plt.show()
