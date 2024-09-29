@@ -61,8 +61,8 @@ def v(t):
     else: 
         return np.array([10, 0])
     
-#Optimized trajectory, get direction to target and current direction,
-#check the difference and change angle by difference times constant
+# Optimized trajectory, get direction to target and current direction,
+# check the difference and change angle by difference times constant
 # k_p (experimented to find).
 def thetaopt(t, pos, vel):
     if pos[1] <= 20:
@@ -131,7 +131,7 @@ def RK4(f, tspan, u0, dt, *args):
 
 RK_x, RK_y = RK4(oderhs, t_span, y0, 0.01)
 
-#Check efficiency of trajectory through minimum distance between target and rocket
+# Check efficiency of trajectory through minimum distance between target and rocket
 
 min_distance = calculate_min_distance(stoppos, RK_x, RK_y)
 
