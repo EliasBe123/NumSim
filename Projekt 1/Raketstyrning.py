@@ -106,8 +106,8 @@ min_distance = calculate_min_distance(stoppos, sol.y[0], sol.y[1])
     
 print("Minimum Distance with solve_ivp(optimized trajectory): ", min_distance)
 
-#Value for unoptimized distance of target:6.383
-#With optimized: 0.1175
+# Value for unoptimized distance of target:6.383
+# With optimized: 0.1175
 
 
 # RUNGE-KUTTA 4:
