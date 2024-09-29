@@ -74,18 +74,22 @@ def thetaopt(t, pos, vel):
     new_angle = current_direction + k_p * angle_diff
     
     return new_angle
-    
+
+def calculate_min_distance(destination, x_values, y_values):
+    min_distance = -1 # Negative length is impossible, used to set if first distance
+    for i in range(x_values.size):
+        dist = np.sqrt((x_values[i] - destination[0])**2 + (y_values[i] -  destination[1])**2)
+        if dist < min_distance or min_distance < 0:
+            min_distance = dist
+    return min_distance
+
 t_span = (0, 50)
 t_eval = np.linspace(0, 50, 1000)
 sol = solve_ivp(oderhs, t_span, y0, t_eval=t_eval)
 
 
 plt.ylim(0, 100)
-min_distance = -1 # Negative length is impossible, used to set if first distance
-for i in range(sol.y[0].size):
-    dist = np.sqrt((sol.y[0][i] - stoppos[0])**2 + (sol.y[1][i] -  stoppos[1])**2)
-    if dist < min_distance or min_distance < 0:
-        min_distance = dist
+min_distance = calculate_min_distance(stoppos, sol.y[0], sol.y[1])
     
 print("Minimum Distance with solve_ivp(optimized trajectory): ", min_distance)
 #Value for unoptimized distance of target:6.383
@@ -109,16 +113,13 @@ def RK4(f, tspan, u0, dt, *args):
         k4 = np.array(f(t_vec[i] + dt_vec[i], u[i, :] + dt_vec[i] * k3, *args))
         u[i+1, :] = u[i, :] + (dt_vec[i] / 6) * (k1 + 2 * k2 + 2 * k3 + k4)
         #Return t, x pos and y pos of rocket
-    return t_vec, u[:, 0], u[:, 1]
+    return u[:, 0], u[:, 1]
 
-RK_t, RK_x, RK_y = RK4(oderhs, t_span, y0, 0.01)
+RK_x, RK_y = RK4(oderhs, t_span, y0, 0.01)
 
 #Check efficiency of trajectory through minimum distance between target and rocket
-min_distance = -1 # Negative length is impossible, used to set if first distance
-for i in range(RK_x.size):
-    dist = np.sqrt((RK_x[i] - stoppos[0])**2 + (RK_y[i] -  stoppos[1])**2)
-    if dist < min_distance or min_distance < 0:
-        min_distance = dist
+
+min_distance = calculate_min_distance(stoppos, RK_x, RK_y)
 
 print("Minimum Ddistance with own RK4(optimized trajectory)", min_distance)
 
