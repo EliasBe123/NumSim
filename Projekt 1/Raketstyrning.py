@@ -11,7 +11,7 @@ g = np.array([0, (-9.81)])
 c = 0.05
 km = 700
 stoppos = np.array([80, 60])
-k_p = 0.925 # Gotten through trial and error
+k_p = 0.7 # Gotten through trial and error
 
 y0 = np.array([0, 0, 0, 0])
 
@@ -68,7 +68,7 @@ def thetaopt(t, pos, vel):
     if pos[1] <= 20:
         return np.pi/2
     target_direction = np.arctan2(stoppos[1] - pos[1], stoppos[0] - pos[0])  
-    current_direction = np.arctan2(vel[0], vel[1])
+    current_direction = np.arctan2(vel[1], vel[0])
     
     angle_diff = target_direction - current_direction
     new_angle = current_direction + k_p * angle_diff
@@ -84,14 +84,34 @@ def calculate_min_distance(destination, x_values, y_values):
     return min_distance
 
 t_span = (0, 50)
-t_eval = np.linspace(0, 50, 1000)
+t_eval = np.arange(t_span[0], t_span[1], 0.01)
+
+# Code used to find best k_p value
+# min_distance = -1
+# min_distance2 = -1
+# best_k_p = -1
+# while k_p > 0:
+#     sol = solve_ivp(oderhs, t_span, y0, t_eval=t_eval)
+
+#     min_distance = calculate_min_distance(stoppos, sol.y[0], sol.y[1])
+    
+#     print("Minimum Distance with solve_ivp(optimized trajectory): ", min_distance)
+#     print("k_p: ", k_p)
+
+#     if min_distance < min_distance2 or min_distance2 < 0:
+#         min_distance2 = min_distance
+#         best_k_p = k_p
+#     k_p -= 0.001
+
+# print("Best k_p: ", best_k_p)
+# print("Best Minimum Distance with solve_ivp(optimized trajectory): ", min_distance2)
+
 sol = solve_ivp(oderhs, t_span, y0, t_eval=t_eval)
 
-
-plt.ylim(0, 100)
 min_distance = calculate_min_distance(stoppos, sol.y[0], sol.y[1])
     
 print("Minimum Distance with solve_ivp(optimized trajectory): ", min_distance)
+
 #Value for unoptimized distance of target:6.383
 #With optimized: 0.339
 
@@ -123,6 +143,7 @@ min_distance = calculate_min_distance(stoppos, RK_x, RK_y)
 
 print("Minimum Ddistance with own RK4(optimized trajectory)", min_distance)
 
+plt.ylim(0, 100)
 plt.plot(sol.y[0], sol.y[1], label='solve_ivp (RK45)')
 plt.plot(RK_x, RK_y, '--', label="RK4 solution")
 plt.plot(stoppos[0], stoppos[1], "ro", label="Target")
