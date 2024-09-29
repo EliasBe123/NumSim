@@ -76,12 +76,7 @@ def thetaopt(t, pos, vel):
     return new_angle
 
 def calculate_min_distance(destination, x_values, y_values):
-    min_distance = -1 # Negative length is impossible, used to set if first distance
-    for i in range(x_values.size):
-        dist = np.sqrt((x_values[i] - destination[0])**2 + (y_values[i] -  destination[1])**2)
-        if dist < min_distance or min_distance < 0:
-            min_distance = dist
-    return min_distance
+    return np.min(np.sqrt((x_values - destination[0])**2 + (y_values - destination[1])**2))
 
 t_span = (0, 50)
 t_eval = np.arange(t_span[0], t_span[1], 0.01)
@@ -112,7 +107,7 @@ min_distance = calculate_min_distance(stoppos, sol.y[0], sol.y[1])
 print("Minimum Distance with solve_ivp(optimized trajectory): ", min_distance)
 
 #Value for unoptimized distance of target:6.383
-#With optimized: 0.2178
+#With optimized: 0.1175
 
 
 # RUNGE-KUTTA 4:
