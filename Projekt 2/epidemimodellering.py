@@ -2,11 +2,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.integrate import solve_ivp
 
-alpha = 1
+alpha = 1 / 7
 beta = 0.3
 gamma = 1 / 7
 mu = 1 / 50
-v = 1 / 10
+vac = 7.5 / 10
 
 n_pop = 1000
 
@@ -68,12 +68,12 @@ def seird_ode(t, y):
 def seirdv_ode(t, y):
     s, e, i, r, d, v = y
 
-    s_prime = -beta * (i / n_pop) * s - v
+    s_prime = -beta * (i / n_pop) * s - vac
     e_prime = beta * (i / n_pop) * s - alpha * e
     i_prime = alpha * e - gamma * i - mu * i
     r_prime = gamma * i
     d_prime = mu * i
-    v_prime = v
+    v_prime = vac
 
     return [s_prime, e_prime, i_prime, r_prime, d_prime, v_prime]
 
