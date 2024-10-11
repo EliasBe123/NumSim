@@ -155,8 +155,8 @@ def propensities_sir(X, coeff):
     beta, gamma, N = coeff  # Model parameters: beta, gamma, N (total population)
     
     # Calculate propensities (rates)
-    infection_rate = beta * S * I / N
-    recovery_rate = gamma * I
+    infection_rate = beta * S * I / N           # S  -> I
+    recovery_rate = gamma * I                   # I  -> R
     
     return np.array([infection_rate, recovery_rate])
 
@@ -164,9 +164,9 @@ def propensities_seir(X, coeff):
     S, E, I, R = X  # Current state
     beta, gamma, alpha, N = coeff  # Model parameters: beta, gamma, N (total population)
     # Calculate propensities (rates)
-    expotion_rate = beta * S * I / N
-    infection_rate = alpha * E- gamma * I
-    recovery_rate = gamma * I
+    expotion_rate = beta * S * I / N            # S  -> E
+    infection_rate = alpha * E- gamma * I       # E  -> I
+    recovery_rate = gamma * I                   # I  -> R
     
     return np.array([expotion_rate, infection_rate, recovery_rate])
 
@@ -174,10 +174,10 @@ def propensities_seird(X, coeff):
     S, E, I, R, D = X  # Current state
     beta, gamma, alpha, mu, N = coeff  # Model parameters: beta, gamma, N (total population)
     # Calculate propensities (rates)
-    exposure_rate = beta * S * I / N
-    infection_rate = alpha * E
-    recovery_rate = gamma * I
-    death_rate = mu * I
+    exposure_rate = beta * S * I / N            # S  -> E
+    infection_rate = alpha * E                  # E  -> I
+    recovery_rate = gamma * I                   # I  -> R
+    death_rate = mu * I                         # I  -> D
 
     return np.array([exposure_rate, infection_rate, recovery_rate, death_rate])
 
@@ -186,11 +186,11 @@ def propensities_seirdv(X, coeff):
     beta, gamma, alpha, mu, vac, N = coeff  # Model parameters
     
     # Calculate propensities (reaction rates)
-    exposure_rate = beta * S * I / N       # S -> E
-    infection_rate = alpha * E             # E -> I
-    recovery_rate = gamma * I              # I -> R
-    death_rate = mu * I                    # I -> D
-    vaccination_rate = vac                 # S -> V
+    exposure_rate = beta * S * I / N            # S  -> E
+    infection_rate = alpha * E                  # E  -> I
+    recovery_rate = gamma * I                   # I  -> R
+    death_rate = mu * I                         # I  -> D
+    vaccination_rate = vac                      # S  -> V
     
     return np.array([exposure_rate, infection_rate, recovery_rate, death_rate, vaccination_rate])
     
@@ -199,17 +199,17 @@ def propensities_seirdv1v2im(X, coeff):
     beta, gamma, alpha, mu, v1, v2, im, N = coeff  # Model parameters
     
     # Calculate propensities (reaction rates)
-    exposure_rate = beta * S * I / N       # S -> E
-    exposure_rate_v1 = (beta / 2) * V1 * I / N 
-    infection_rate = alpha * E             # E -> I
-    recovery_rate = gamma * I              # I -> R
-    death_rate = mu * I                    # I -> D
-    vaccination_rate_v1 = v1 * S                # S -> V1 (First dose of vaccine)
-    vaccination_rate_v2 = v2 * V1              # V1 -> V2 (Second dose of vaccine)
-    full_immunity_from_vaccination = im * V2 # V2 -> M (Full immunity)
-    full_immunity_from_recovery = im * R 
-    recovery_to_v1 = v1 * R 
-    recovery_to_v2 = v2 * R
+    exposure_rate = beta * S * I / N            # S  -> E
+    exposure_rate_v1 = (beta / 2) * V1 * I / N  # V1 -> E
+    infection_rate = alpha * E                  # E  -> I
+    recovery_rate = gamma * I                   # I  -> R
+    death_rate = mu * I                         # I  -> D
+    vaccination_rate_v1 = v1 * S                # S  -> V1 (First dose of vaccine)
+    vaccination_rate_v2 = v2 * V1               # V1 -> V2 (Second dose of vaccine)
+    full_immunity_from_vaccination = im * V2    # V2 -> IMV (Full immunity)
+    full_immunity_from_recovery = im * R        # R  -> IMR
+    recovery_to_v1 = v1 * R                     # R  -> V1
+    recovery_to_v2 = v2 * R                     # R  -> V2
     
     return np.array([exposure_rate, exposure_rate_v1, infection_rate,
                      recovery_rate, death_rate, vaccination_rate_v1,
