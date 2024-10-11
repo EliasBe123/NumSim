@@ -26,22 +26,24 @@ I_0 = 5
 E_0 = 0
 S_0 = N - I_0
 
+coeff = np.array([beta, gamma, alpha, mu, vac, v1,v2, im, N])
 
 
 # SIR model
-sir0 = S_0, I_0, R_0
+SIR_0 = np.array([S_0, I_0, R_0])
 
 # SEIR model
-seir0 = S_0, E_0, I_0, R_0
+SEIR_0 = np.array([S_0, E_0, I_0, R_0])
 
 # SEIRD model
-seird0 = S_0, E_0, I_0, R_0, D_0
+SEIRD_0 = np.array([S_0, E_0, I_0, R_0, D_0])
 
 # SEIRDV model
-seirdv0 = S_0, E_0, I_0, R_0, D_0, V_0
+SEIRDV_0 = np.array([S_0, E_0, I_0, R_0, D_0, V_0])
 
 # Own model
-own0 = S_0, E_0, I_0, R_0, D_0, V1_0, V2_0, IM_0, IMREC_0, RV1_0, RV2_0
+SEIRDV1V2IM_0_ode = np.array([S_0, E_0, I_0, R_0, D_0, V1_0, V2_0, IM_0, IMREC_0, RV1_0, RV2_0])
+SEIRDV1V2IM_0_stoch = np.array([S_0, E_0, I_0, R_0, D_0, V1_0, V2_0, IM_0])
 
 t0, t1 = 0, 120
 tspan = t0, t1
@@ -152,8 +154,8 @@ def SSA(prop, stoch, X0, tspan, coeff):
 
 def propensities_sir(X, coeff):
     S, I, R = X  # Current state
-    beta, gamma, N = coeff  # Model parameters: beta, gamma, N (total population)
-    
+    beta, gamma, alpha, mu, vac, v1, v2, im, N = coeff  # Model parameters
+
     # Calculate propensities (rates)
     infection_rate = beta * S * I / N           # S  -> I
     recovery_rate = gamma * I                   # I  -> R
@@ -162,7 +164,9 @@ def propensities_sir(X, coeff):
 
 def propensities_seir(X, coeff):
     S, E, I, R = X  # Current state
-    beta, gamma, alpha, N = coeff  # Model parameters: beta, gamma, N (total population)
+    # beta, gamma, alpha, N = coeff  # Model parameters: beta, gamma, N (total population)
+    beta, gamma, alpha, mu, vac, v1, v2, im, N = coeff  # Model parameters
+
     # Calculate propensities (rates)
     expotion_rate = beta * S * I / N            # S  -> E
     infection_rate = alpha * E- gamma * I       # E  -> I
@@ -172,7 +176,9 @@ def propensities_seir(X, coeff):
 
 def propensities_seird(X, coeff):
     S, E, I, R, D = X  # Current state
-    beta, gamma, alpha, mu, N = coeff  # Model parameters: beta, gamma, N (total population)
+    # beta, gamma, alpha, mu, N = coeff  # Model parameters: beta, gamma, N (total population)
+    beta, gamma, alpha, mu, vac, v1, v2, im, N = coeff  # Model parameters
+
     # Calculate propensities (rates)
     exposure_rate = beta * S * I / N            # S  -> E
     infection_rate = alpha * E                  # E  -> I
@@ -183,7 +189,8 @@ def propensities_seird(X, coeff):
 
 def propensities_seirdv(X, coeff):
     S, E, I, R, D, V = X  # Current state
-    beta, gamma, alpha, mu, vac, N = coeff  # Model parameters
+    # beta, gamma, alpha, mu, vac, N = coeff  # Model parameters
+    beta, gamma, alpha, mu, vac, v1, v2, im, N = coeff  # Model parameters
     
     # Calculate propensities (reaction rates)
     exposure_rate = beta * S * I / N            # S  -> E
@@ -196,7 +203,7 @@ def propensities_seirdv(X, coeff):
     
 def propensities_seirdv1v2im(X, coeff):
     S, E, I, R, D, V1, V2, IM = X  # Current state
-    beta, gamma, alpha, mu, v1, v2, im, N = coeff  # Model parameters
+    beta, gamma, alpha, mu, vac, v1, v2, im, N = coeff  # Model parameters
     
     # Calculate propensities (reaction rates)
     exposure_rate = beta * S * I / N            # S  -> E
@@ -222,7 +229,7 @@ ode = -1
 
 # SIR
 if ode == 0:
-    y = solve_ivp(fun=sir_ode, t_span=tspan, y0=sir0, t_eval=teval)
+    y = solve_ivp(fun=sir_ode, t_span=tspan, y0=SIR_0, t_eval=teval)
 
     plt.plot(y.t, y.y[0], label='Susceptible')
     plt.plot(y.t, y.y[1], label='Infected')
@@ -230,7 +237,7 @@ if ode == 0:
 
 # SEIR
 elif ode == 1:
-    y = solve_ivp(fun=seir_ode, t_span=tspan, y0=seir0, t_eval=teval)
+    y = solve_ivp(fun=seir_ode, t_span=tspan, y0=SEIR_0, t_eval=teval)
 
     plt.plot(y.t, y.y[0], label='Susceptible')
     plt.plot(y.t, y.y[1], label='Exposed')
@@ -239,7 +246,7 @@ elif ode == 1:
 
 # SEIRD
 elif ode == 2:
-    y = solve_ivp(fun=seird_ode, t_span=tspan, y0=seird0, t_eval=teval)
+    y = solve_ivp(fun=seird_ode, t_span=tspan, y0=SEIRD_0, t_eval=teval)
 
     plt.plot(y.t, y.y[0], label='Susceptible')
     plt.plot(y.t, y.y[1], label='Exposed')
@@ -249,7 +256,7 @@ elif ode == 2:
 
 # SEIRDV
 elif ode == 3:
-    y = solve_ivp(fun=seirdv_ode, t_span=tspan, y0=seirdv0, t_eval=teval)
+    y = solve_ivp(fun=seirdv_ode, t_span=tspan, y0=SEIRDV_0, t_eval=teval)
 
     plt.plot(y.t, y.y[0], label='Susceptible')
     plt.plot(y.t, y.y[1], label='Exposed')
@@ -258,9 +265,9 @@ elif ode == 3:
     plt.plot(y.t, y.y[4], label='Dead')
     plt.plot(y.t, y.y[5], label='Vaccinated')
 
-# Own
+# Own (SEIRDV1V2IM)
 elif ode == 4:
-    y = solve_ivp(fun=own_model_ode, t_span=tspan, y0=own0, t_eval=teval)
+    y = solve_ivp(fun=own_model_ode, t_span=tspan, y0=SEIRDV1V2IM_0_ode, t_eval=teval)
 
     plt.plot(y.t, y.y[0], label='Susceptible')
     plt.plot(y.t, y.y[1], label='Exposed')
@@ -274,6 +281,7 @@ elif ode == 4:
     plt.plot(y.t, y.y[9], label='Recovery vaccinated 1')
     plt.plot(y.t, y.y[10], label='Recovery vaccinated 2')
 
+
 stoch = 4
 
 # SIR
@@ -281,13 +289,7 @@ if stoch == 0:
     stochiometry = np.array([[-1, 1, 0],  
                              [ 0,-1, 1]])
 
-    X0 = np.array([995, 5, 0])
-
-    tspan = [0, 120] 
-
-    coeff = [0.3, 1/7, 1000]
-    tvec, Xarr = SSA(propensities_sir, stochiometry, X0, tspan, coeff)
-
+    tvec, Xarr = SSA(propensities_sir, stochiometry, SIR_0, tspan, coeff)
 
     plt.plot(tvec, Xarr[:, 0], label='Susceptible')
     plt.plot(tvec, Xarr[:, 1], label='Infected')
@@ -299,13 +301,7 @@ elif stoch == 1:
                              [ 0,-1, 1, 0],  
                              [ 0, 0,-1, 1]])
 
-    X0 = np.array([995, 0, 5, 0])
-
-    tspan = [0, 120] 
-
-    coeff = [beta, gamma, alpha, N]
-    tvec, Xarr = SSA(propensities_seir, stochiometry, X0, tspan, coeff)
-
+    tvec, Xarr = SSA(propensities_seir, stochiometry, SEIR_0, tspan, coeff)
 
     plt.plot(tvec, Xarr[:, 0], label='Susceptible')
     plt.plot(tvec, Xarr[:, 1], label='Exposed')
@@ -319,13 +315,7 @@ elif stoch == 2:
                              [ 0, 0,-1, 1, 0],
                              [ 0, 0,-1, 0, 1]])
 
-    X0 = np.array([995, 0, 5, 0, 0])
-
-    tspan = [0, 120] 
-
-    coeff = [beta, gamma, alpha, mu, N]
-    tvec, Xarr = SSA(propensities_seird, stochiometry, X0, tspan, coeff)
-
+    tvec, Xarr = SSA(propensities_seird, stochiometry, SEIRD_0, tspan, coeff)
 
     plt.plot(tvec, Xarr[:, 0], label='Susceptible')
     plt.plot(tvec, Xarr[:, 1], label='Exposed')
@@ -341,12 +331,7 @@ elif stoch == 3:
                              [ 0, 0,-1, 0, 1, 0],
                              [-1, 0, 0, 0, 0, 1]])
 
-    X0 = np.array([995, 0, 5, 0, 0, 0])
-
-    tspan = [0, 120] 
-
-    coeff = [beta, gamma, alpha, mu, v, N]
-    tvec, Xarr = SSA(propensities_seirdv, stochiometry, X0, tspan, coeff)
+    tvec, Xarr = SSA(propensities_seirdv, stochiometry, SEIRDV_0, tspan, coeff)
 
     plt.plot(tvec, Xarr[:, 0], label='Susceptible')
     plt.plot(tvec, Xarr[:, 1], label='Exposed')
@@ -355,7 +340,7 @@ elif stoch == 3:
     plt.plot(tvec, Xarr[:, 4], label='Dead')
     plt.plot(tvec, Xarr[:, 5], label='Vaccinated')
 
-# Own
+# Own (SEIRDV1V2IM)
 elif stoch == 4:
     # S E I R D V1 V2 IM
     stochiometry = np.array([[-1, 1, 0, 0, 0, 0, 0, 0],  # S -> E (Infection)
@@ -370,12 +355,7 @@ elif stoch == 4:
                              [ 0, 0, 0,-1, 0, 1, 0, 0],  #R -> V1
                              [ 0, 0, 0,-1, 0, 0, 1, 0]]) #R -> V2
 
-    X0 = np.array([S_0, 0, I_0, 0, 0, 0, 0, 0])
-
-    tspan = [0, 120] 
-
-    coeff = [beta, gamma, alpha, mu, v1,v2, im, N]
-    tvec, Xarr = SSA(propensities_seirdv1v2im, stochiometry, X0, tspan, coeff)
+    tvec, Xarr = SSA(propensities_seirdv1v2im, stochiometry, SEIRDV1V2IM_0_stoch, tspan, coeff)
 
     plt.plot(tvec, Xarr[:, 0], label='Susceptible')
     plt.plot(tvec, Xarr[:, 1], label='Exposed')
