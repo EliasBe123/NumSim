@@ -12,8 +12,6 @@ v1 = 1/10
 v2 = 1/28
 im = 1/14
 
-# E_0= 5
-
 N = 1000
 RV2_0 = 0
 RV1_0 = 0
@@ -25,14 +23,8 @@ V_0 = 0
 D_0 = 0
 R_0 = 0
 I_0 = 5
-E_0 = 1 / 5
+E_0 = 0
 S_0 = N - I_0
-
-
-
-
-
-
 
 
 
@@ -345,20 +337,56 @@ def propensities_seirdv1v2im(X, coeff):
 
 # res = result/1
 
+# ODE
+ode = 4
+if ode == 0:
+    y = solve_ivp(fun=sir_ode, t_span=tspan, y0=sir0, t_eval=teval)
 
-y = solve_ivp(fun=own_model_ode, t_span=tspan, y0=own0, t_eval=teval)
+    plt.plot(y.t, y.y[0], label='Susceptible')
+    plt.plot(y.t, y.y[1], label='Infected')
+    plt.plot(y.t, y.y[2], label='Recovered')
 
-plt.plot(y.t, y.y[0], label='Susceptible')
-plt.plot(y.t, y.y[1], label='Exposed')
-plt.plot(y.t, y.y[2], label='Infected')
-plt.plot(y.t, y.y[3], label='Recovered')
-plt.plot(y.t, y.y[4], label='Dead')
-plt.plot(y.t, y.y[5], label='Vaccinated1')
-plt.plot(y.t, y.y[6], label='Vaccinated2')
-plt.plot(y.t, y.y[7], label='Immune')
-plt.plot(y.t, y.y[8], label='Immune recovery')
-plt.plot(y.t, y.y[9], label='Recovery vaccinated 1')
-plt.plot(y.t, y.y[10], label='Recovery vaccinated 2')
+elif ode == 1:
+    y = solve_ivp(fun=seir_ode, t_span=tspan, y0=seir0, t_eval=teval)
+
+    plt.plot(y.t, y.y[0], label='Susceptible')
+    plt.plot(y.t, y.y[1], label='Exposed')
+    plt.plot(y.t, y.y[2], label='Infected')
+    plt.plot(y.t, y.y[3], label='Recovered')
+
+elif ode == 2:
+    y = solve_ivp(fun=seird_ode, t_span=tspan, y0=seird0, t_eval=teval)
+
+    plt.plot(y.t, y.y[0], label='Susceptible')
+    plt.plot(y.t, y.y[1], label='Exposed')
+    plt.plot(y.t, y.y[2], label='Infected')
+    plt.plot(y.t, y.y[3], label='Recovered')
+    plt.plot(y.t, y.y[4], label='Dead')
+
+elif ode == 3:
+    y = solve_ivp(fun=seirdv_ode, t_span=tspan, y0=seirdv0, t_eval=teval)
+
+    plt.plot(y.t, y.y[0], label='Susceptible')
+    plt.plot(y.t, y.y[1], label='Exposed')
+    plt.plot(y.t, y.y[2], label='Infected')
+    plt.plot(y.t, y.y[3], label='Recovered')
+    plt.plot(y.t, y.y[4], label='Dead')
+    plt.plot(y.t, y.y[5], label='Vaccinated')
+
+elif ode == 4:
+    y = solve_ivp(fun=own_model_ode, t_span=tspan, y0=own0, t_eval=teval)
+
+    plt.plot(y.t, y.y[0], label='Susceptible')
+    plt.plot(y.t, y.y[1], label='Exposed')
+    plt.plot(y.t, y.y[2], label='Infected')
+    plt.plot(y.t, y.y[3], label='Recovered')
+    plt.plot(y.t, y.y[4], label='Dead')
+    plt.plot(y.t, y.y[5], label='Vaccinated1')
+    plt.plot(y.t, y.y[6], label='Vaccinated2')
+    plt.plot(y.t, y.y[7], label='Immune')
+    plt.plot(y.t, y.y[8], label='Immune recovery')
+    plt.plot(y.t, y.y[9], label='Recovery vaccinated 1')
+    plt.plot(y.t, y.y[10], label='Recovery vaccinated 2')
 
 plt.title("Projekt 2")
 plt.grid()
