@@ -215,130 +215,12 @@ def propensities_seirdv1v2im(X, coeff):
                      recovery_rate, death_rate, vaccination_rate_v1,
                      vaccination_rate_v2, full_immunity_from_vaccination,
                      full_immunity_from_recovery, recovery_to_v1, recovery_to_v2])
-    
 
-# SIR model
-
-# stochiometry = np.array([[-1, 1, 0],  
-#                         [0, -1, 1]])
-
-# X0 = np.array([995, 5, 0])
-
-# tspan = [0, 120] 
-
-# coeff = [0.3, 1/7, 1000]
-# tvec, Xarr = SSA(propensities_sir, stochiometry, X0, tspan, coeff)
-
-
-# plt.plot(tvec, Xarr[:, 0], label='Susceptible')
-# plt.plot(tvec, Xarr[:, 1], label='Infected')
-# plt.plot(tvec, Xarr[:, 2], label='Recovered')
-
-
-
-
-
-# SEIR model
-# stochiometry = np.array([[-1, 1, 0, 0],
-#                         [0, -1, 1, 0],  
-#                         [0, 0, -1, 1]])
-
-# X0 = np.array([995, 0, 5, 0])
-
-# tspan = [0, 120] 
-
-# coeff = [beta, gamma, alpha, N]
-# tvec, Xarr = SSA(propensities_seir, stochiometry, X0, tspan, coeff)
-
-
-# plt.plot(tvec, Xarr[:, 0], label='Susceptible')
-# plt.plot(tvec, Xarr[:, 1], label='Exposed')
-# plt.plot(tvec, Xarr[:, 2], label='Infected')
-# plt.plot(tvec, Xarr[:, 3], label='Recovered')
-
-# SEIRD model
-# stochiometry = np.array([[-1, 1, 0, 0, 0],
-#                         [0, -1, 1, 0, 0],  
-#                         [0, 0, -1, 1, 0],
-#                         [0, 0, -1, 0, 1 ]])
-
-# X0 = np.array([995, 0, 5, 0, 0])
-
-# tspan = [0, 120] 
-
-# coeff = [beta, gamma, alpha, mu, N]
-# tvec, Xarr = SSA(propensities_seird, stochiometry, X0, tspan, coeff)
-
-
-# plt.plot(tvec, Xarr[:, 0], label='Susceptible')
-# plt.plot(tvec, Xarr[:, 1], label='Exposed')
-# plt.plot(tvec, Xarr[:, 2], label='Infected')
-# plt.plot(tvec, Xarr[:, 3], label='Recovered')
-# plt.plot(tvec, Xarr[:, 4], label='Dead')
-
-# SEIRDV model
-# stochiometry = np.array([[-1, 1, 0, 0, 0, 0],
-#                         [0, -1, 1, 0, 0, 0],  
-#                         [0, 0, -1, 1, 0, 0],
-#                         [0, 0, -1, 0, 1, 0],
-#                         [-1, 0, 0, 0, 0, 1]])
-
-# X0 = np.array([995, 0, 5, 0, 0, 0])
-
-# tspan = [0, 120] 
-
-# coeff = [beta, gamma, alpha, mu, v, N]
-# tvec, Xarr = SSA(propensities_seirdv, stochiometry, X0, tspan, coeff)
-
-# plt.plot(tvec, Xarr[:, 0], label='Susceptible')
-# plt.plot(tvec, Xarr[:, 1], label='Exposed')
-# plt.plot(tvec, Xarr[:, 2], label='Infected')
-# plt.plot(tvec, Xarr[:, 3], label='Recovered')
-# plt.plot(tvec, Xarr[:, 4], label='Dead')
-# plt.plot(tvec, Xarr[:, 5], label='Vaccinated')
-
-
-#SEIRDV1V2IM
-#Own model
-# stochiometry = np.array([[-1,  1,  0,  0,  0,  0,  0,  0],  # S -> E (Infection)
-#                          [ 0, 1,  0,  0,  0,  -1,  0,  0],  # V1 -> E (Reduced infection for V1)
-#                          [ 0,  -1, 1,  0,  0,  0,  0,  0],  # E -> I (Incubation ends)
-#                          [ 0,  0,  -1, 1,  0,  0,  0,  0],  # I -> R (Recovery)
-#                          [ 0,  0,  -1, 0,  1,  0,  0,  0],  # I -> D (Death)
-#                          [-1,  0,  0,  0,  0,  1,  0,  0],  # S -> V1 (First vaccine dose)
-#                          [ 0,  0,  0,  0,  0, -1,  1,  0],  # V1 -> V2 (Second vaccine dose)
-#                          [ 0,  0,  0,  0,  0,  0, -1,  1],  # V2 -> IM (Full immunity from vaccination)
-#                          [ 0,  0,  0,  -1,  0,  0,  0, 1],  # R -> IM (Full immunity after recovery)
-#                           [0, 0, 0, -1, 0, 1, 0, 0],  #R -> V1
-#                            [0, 0, 0, -1, 0, 0, 1, 0] ]) #R -> V2
-
-# X0 = np.array([N - E0, 0, 0, I0, 0, 0, 0, 0])
-
-# tspan = [0, 120] 
-
-# coeff = [beta, gamma, alpha, mu, v1,v2, im, N]
-# tvec, Xarr = SSA(propensities_seirdv1v2im, stochiometry, X0, tspan, coeff)
-
-# plt.plot(tvec, Xarr[:, 0], label='Susceptible')
-# plt.plot(tvec, Xarr[:, 1], label='Exposed')
-# plt.plot(tvec, Xarr[:, 2], label='Infected')
-# plt.plot(tvec, Xarr[:, 3], label='Recovered')
-# plt.plot(tvec, Xarr[:, 4], label='Dead')
-# plt.plot(tvec, Xarr[:, 5], label='Vaccinated1')
-# plt.plot(tvec, Xarr[:, 6], label='Vaccinated2')
-# plt.plot(tvec, Xarr[:, 7], label='Immune')
-# i = 0
-# result = 0
-# while (i < 1):
-#     tvec, Xarr = SSA(propensities_seirdv1v2im, stochiometry, X0, tspan, coeff)
-#     i += 1
-
-#     result += Xarr[:][-1][4]
-
-# res = result/1
 
 # ODE
-ode = 4
+ode = -1
+
+# SIR
 if ode == 0:
     y = solve_ivp(fun=sir_ode, t_span=tspan, y0=sir0, t_eval=teval)
 
@@ -346,6 +228,7 @@ if ode == 0:
     plt.plot(y.t, y.y[1], label='Infected')
     plt.plot(y.t, y.y[2], label='Recovered')
 
+# SEIR
 elif ode == 1:
     y = solve_ivp(fun=seir_ode, t_span=tspan, y0=seir0, t_eval=teval)
 
@@ -354,6 +237,7 @@ elif ode == 1:
     plt.plot(y.t, y.y[2], label='Infected')
     plt.plot(y.t, y.y[3], label='Recovered')
 
+# SEIRD
 elif ode == 2:
     y = solve_ivp(fun=seird_ode, t_span=tspan, y0=seird0, t_eval=teval)
 
@@ -363,6 +247,7 @@ elif ode == 2:
     plt.plot(y.t, y.y[3], label='Recovered')
     plt.plot(y.t, y.y[4], label='Dead')
 
+# SEIRDV
 elif ode == 3:
     y = solve_ivp(fun=seirdv_ode, t_span=tspan, y0=seirdv0, t_eval=teval)
 
@@ -373,6 +258,7 @@ elif ode == 3:
     plt.plot(y.t, y.y[4], label='Dead')
     plt.plot(y.t, y.y[5], label='Vaccinated')
 
+# Own
 elif ode == 4:
     y = solve_ivp(fun=own_model_ode, t_span=tspan, y0=own0, t_eval=teval)
 
@@ -387,6 +273,128 @@ elif ode == 4:
     plt.plot(y.t, y.y[8], label='Immune recovery')
     plt.plot(y.t, y.y[9], label='Recovery vaccinated 1')
     plt.plot(y.t, y.y[10], label='Recovery vaccinated 2')
+
+stoch = 4
+
+# SIR
+if stoch == 0:
+    stochiometry = np.array([[-1, 1, 0],  
+                             [ 0,-1, 1]])
+
+    X0 = np.array([995, 5, 0])
+
+    tspan = [0, 120] 
+
+    coeff = [0.3, 1/7, 1000]
+    tvec, Xarr = SSA(propensities_sir, stochiometry, X0, tspan, coeff)
+
+
+    plt.plot(tvec, Xarr[:, 0], label='Susceptible')
+    plt.plot(tvec, Xarr[:, 1], label='Infected')
+    plt.plot(tvec, Xarr[:, 2], label='Recovered')
+
+# SEIR
+elif stoch == 1:
+    stochiometry = np.array([[-1, 1, 0, 0],
+                             [ 0,-1, 1, 0],  
+                             [ 0, 0,-1, 1]])
+
+    X0 = np.array([995, 0, 5, 0])
+
+    tspan = [0, 120] 
+
+    coeff = [beta, gamma, alpha, N]
+    tvec, Xarr = SSA(propensities_seir, stochiometry, X0, tspan, coeff)
+
+
+    plt.plot(tvec, Xarr[:, 0], label='Susceptible')
+    plt.plot(tvec, Xarr[:, 1], label='Exposed')
+    plt.plot(tvec, Xarr[:, 2], label='Infected')
+    plt.plot(tvec, Xarr[:, 3], label='Recovered')
+
+# SEIRD
+elif stoch == 2:
+    stochiometry = np.array([[-1, 1, 0, 0, 0],
+                             [ 0,-1, 1, 0, 0],  
+                             [ 0, 0,-1, 1, 0],
+                             [ 0, 0,-1, 0, 1]])
+
+    X0 = np.array([995, 0, 5, 0, 0])
+
+    tspan = [0, 120] 
+
+    coeff = [beta, gamma, alpha, mu, N]
+    tvec, Xarr = SSA(propensities_seird, stochiometry, X0, tspan, coeff)
+
+
+    plt.plot(tvec, Xarr[:, 0], label='Susceptible')
+    plt.plot(tvec, Xarr[:, 1], label='Exposed')
+    plt.plot(tvec, Xarr[:, 2], label='Infected')
+    plt.plot(tvec, Xarr[:, 3], label='Recovered')
+    plt.plot(tvec, Xarr[:, 4], label='Dead')
+
+# SEIRDV
+elif stoch == 3:
+    stochiometry = np.array([[-1, 1, 0, 0, 0, 0],
+                             [ 0,-1, 1, 0, 0, 0],  
+                             [ 0, 0,-1, 1, 0, 0],
+                             [ 0, 0,-1, 0, 1, 0],
+                             [-1, 0, 0, 0, 0, 1]])
+
+    X0 = np.array([995, 0, 5, 0, 0, 0])
+
+    tspan = [0, 120] 
+
+    coeff = [beta, gamma, alpha, mu, v, N]
+    tvec, Xarr = SSA(propensities_seirdv, stochiometry, X0, tspan, coeff)
+
+    plt.plot(tvec, Xarr[:, 0], label='Susceptible')
+    plt.plot(tvec, Xarr[:, 1], label='Exposed')
+    plt.plot(tvec, Xarr[:, 2], label='Infected')
+    plt.plot(tvec, Xarr[:, 3], label='Recovered')
+    plt.plot(tvec, Xarr[:, 4], label='Dead')
+    plt.plot(tvec, Xarr[:, 5], label='Vaccinated')
+
+# Own
+elif stoch == 4:
+    # S E I R D V1 V2 IM
+    stochiometry = np.array([[-1, 1, 0, 0, 0, 0, 0, 0],  # S -> E (Infection)
+                             [ 0, 1, 0, 0, 0,-1, 0, 0],  # V1 -> E (Reduced infection for V1)
+                             [ 0,-1, 1, 0, 0, 0, 0, 0],  # E -> I (Incubation ends)
+                             [ 0, 0,-1, 1, 0, 0, 0, 0],  # I -> R (Recovery)
+                             [ 0, 0,-1, 0, 1, 0, 0, 0],  # I -> D (Death)
+                             [-1, 0, 0, 0, 0, 1, 0, 0],  # S -> V1 (First vaccine dose)
+                             [ 0, 0, 0, 0, 0,-1, 1, 0],  # V1 -> V2 (Second vaccine dose)
+                             [ 0, 0, 0, 0, 0, 0,-1, 1],  # V2 -> IM (Full immunity from vaccination)
+                             [ 0, 0, 0,-1, 0, 0, 0, 1],  # R -> IM (Full immunity after recovery)
+                             [ 0, 0, 0,-1, 0, 1, 0, 0],  #R -> V1
+                             [ 0, 0, 0,-1, 0, 0, 1, 0]]) #R -> V2
+
+    X0 = np.array([S_0, 0, I_0, 0, 0, 0, 0, 0])
+
+    tspan = [0, 120] 
+
+    coeff = [beta, gamma, alpha, mu, v1,v2, im, N]
+    tvec, Xarr = SSA(propensities_seirdv1v2im, stochiometry, X0, tspan, coeff)
+
+    plt.plot(tvec, Xarr[:, 0], label='Susceptible')
+    plt.plot(tvec, Xarr[:, 1], label='Exposed')
+    plt.plot(tvec, Xarr[:, 2], label='Infected')
+    plt.plot(tvec, Xarr[:, 3], label='Recovered')
+    plt.plot(tvec, Xarr[:, 4], label='Dead')
+    plt.plot(tvec, Xarr[:, 5], label='Vaccinated1')
+    plt.plot(tvec, Xarr[:, 6], label='Vaccinated2')
+    plt.plot(tvec, Xarr[:, 7], label='Immune')
+
+# i = 0
+# result = 0
+# while (i < 1):
+#     tvec, Xarr = SSA(propensities_seirdv1v2im, stochiometry, X0, tspan, coeff)
+#     i += 1
+
+#     result += Xarr[:][-1][4]
+
+# res = result/1
 
 plt.title("Projekt 2")
 plt.grid()
