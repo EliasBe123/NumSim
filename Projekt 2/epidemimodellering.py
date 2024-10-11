@@ -200,20 +200,20 @@ def propensities_seirdv1v2im(X, coeff):
 
 # SIR model
 
-# stochiometry = np.array([[-1, 1, 0],  
-#                         [0, -1, 1]])
+stochiometry = np.array([[-1, 1, 0],  
+                        [0, -1, 1]])
 
-# X0 = np.array([995, 5, 0])
+X0 = np.array([995, 5, 0])
 
-# tspan = [0, 120] 
+tspan = [0, 120] 
 
-# coeff = [0.3, 1/7, 1000]
-# tvec, Xarr = SSA(propensities_sir, stochiometry, X0, tspan, coeff)
+coeff = [0.3, 1/7, 1000]
+tvec, Xarr = SSA(propensities_sir, stochiometry, X0, tspan, coeff)
 
 
-# plt.plot(tvec, Xarr[:, 0], label='Susceptible')
-# plt.plot(tvec, Xarr[:, 1], label='Infected')
-# plt.plot(tvec, Xarr[:, 2], label='Recovered')
+plt.plot(tvec, Xarr[:, 0], label='Susceptible')
+plt.plot(tvec, Xarr[:, 1], label='Infected')
+plt.plot(tvec, Xarr[:, 2], label='Recovered')
 
 
 
@@ -226,7 +226,7 @@ def propensities_seirdv1v2im(X, coeff):
 
 # tspan = [0, 120] 
 
-#coeff = [beta, gamma, alpha, mu, N]
+# coeff = [beta, gamma, alpha, N]
 # tvec, Xarr = SSA(propensities_seir, stochiometry, X0, tspan, coeff)
 
 
