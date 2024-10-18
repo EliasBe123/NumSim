@@ -2,6 +2,17 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.integrate import solve_ivp
 
+# Selector ODE and/or stochastic
+# 0 - SIR
+# 1 - SEIR
+# 2 - SEIRD
+# 3 - SEIRDV
+# 4 - Own model
+# other - invalid
+ode = -1
+stoch = -1
+
+# Coefficients
 alpha = 1 / 7
 beta = 0.3
 gamma = 1 / 7
@@ -12,6 +23,7 @@ v1 = 1/10
 v2 = 1/28
 im = 1/14
 
+# Initial values
 N = 1000
 RV2_0 = 0
 RV1_0 = 0
@@ -93,6 +105,7 @@ def seirdv_ode(t, y):
 
     return np.array([S_prime, E_prime, I_prime, R_prime, D_prime, V_prime])
 
+# TODO: Fix the ODE
 def seirdv1v2im_ode(t, y):
     # S, E, I, R, D, V1, V2, IM, IM_REC, R_V1, R_V2 = y
     S, E, I, R, D, V1, V2, IM = y
@@ -155,7 +168,6 @@ def propensities_sir(X, coeff):
     S, I, R = X  # Current state
     beta, gamma, alpha, mu, vac, v1, v2, im, N = coeff  # Model parameters
 
-    # Calculate propensities (rates)
     infection_rate = beta * S * I / N           # S  -> I
     recovery_rate = gamma * I                   # I  -> R
     
@@ -163,10 +175,9 @@ def propensities_sir(X, coeff):
 
 def propensities_seir(X, coeff):
     S, E, I, R = X  # Current state
-    # beta, gamma, alpha, N = coeff  # Model parameters: beta, gamma, N (total population)
+    # beta, gamma, alpha, N = coeff  # Model parameters
     beta, gamma, alpha, mu, vac, v1, v2, im, N = coeff  # Model parameters
 
-    # Calculate propensities (rates)
     expotion_rate = beta * S * I / N            # S  -> E
     infection_rate = alpha * E- gamma * I       # E  -> I
     recovery_rate = gamma * I                   # I  -> R
@@ -175,10 +186,9 @@ def propensities_seir(X, coeff):
 
 def propensities_seird(X, coeff):
     S, E, I, R, D = X  # Current state
-    # beta, gamma, alpha, mu, N = coeff  # Model parameters: beta, gamma, N (total population)
+    # beta, gamma, alpha, mu, N = coeff  # Model parameters
     beta, gamma, alpha, mu, vac, v1, v2, im, N = coeff  # Model parameters
 
-    # Calculate propensities (rates)
     exposure_rate = beta * S * I / N            # S  -> E
     infection_rate = alpha * E                  # E  -> I
     recovery_rate = gamma * I                   # I  -> R
@@ -191,7 +201,6 @@ def propensities_seirdv(X, coeff):
     # beta, gamma, alpha, mu, vac, N = coeff  # Model parameters
     beta, gamma, alpha, mu, vac, v1, v2, im, N = coeff  # Model parameters
     
-    # Calculate propensities (reaction rates)
     exposure_rate = beta * S * I / N            # S  -> E
     infection_rate = alpha * E                  # E  -> I
     recovery_rate = gamma * I                   # I  -> R
@@ -204,7 +213,6 @@ def propensities_seirdv1v2im(X, coeff):
     S, E, I, R, D, V1, V2, IM = X  # Current state
     beta, gamma, alpha, mu, vac, v1, v2, im, N = coeff  # Model parameters
     
-    # Calculate propensities (reaction rates)
     exposure_rate = beta * S * I / N            # S  -> E
     exposure_rate_v1 = (beta / 2) * V1 * I / N  # V1 -> E
     infection_rate = alpha * E                  # E  -> I
@@ -221,10 +229,6 @@ def propensities_seirdv1v2im(X, coeff):
                      recovery_rate, death_rate, vaccination_rate_v1,
                      vaccination_rate_v2, full_immunity_from_vaccination,
                      full_immunity_from_recovery, recovery_to_v1, recovery_to_v2])
-
-
-# ODE
-ode = 4
 
 # SIR
 if ode == 0:
@@ -265,6 +269,7 @@ elif ode == 3:
     plt.plot(y.t, y.y[5], label='Vaccinated')
 
 # Own (SEIRDV1V2IM)
+# TODO: Fix the ODE
 elif ode == 4:
     y = solve_ivp(fun=seirdv1v2im_ode, t_span=tspan, y0=SEIRDV1V2IM_0_light, t_eval=teval)
 
@@ -279,9 +284,6 @@ elif ode == 4:
     # plt.plot(y.t, y.y[8], label='Immune recovery')
     # plt.plot(y.t, y.y[9], label='Recovery vaccinated 1')
     # plt.plot(y.t, y.y[10], label='Recovery vaccinated 2')
-
-
-stoch = 4
 
 # SIR
 if stoch == 0:
@@ -372,6 +374,9 @@ elif stoch == 4:
 #     result += Xarr[:][-1][4]
 
 # res = result/1
+if (ode < 0 or ode > 4) and (stoch < 0 or stoch > 4):
+    print("Please choose a valid model")
+    exit()
 
 plt.title("Projekt 2")
 plt.grid()
