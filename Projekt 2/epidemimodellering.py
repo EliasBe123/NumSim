@@ -12,6 +12,10 @@ from scipy.integrate import solve_ivp
 ode = -1
 stoch = -1
 
+if (ode < 0 or ode > 4) and (stoch < 0 or stoch > 4):
+    print("Please choose a valid model")
+    exit()
+    
 # Coefficients
 alpha = 1 / 7
 beta = 0.3
@@ -374,9 +378,6 @@ elif stoch == 4:
 #     result += Xarr[:][-1][4]
 
 # res = result/1
-if (ode < 0 or ode > 4) and (stoch < 0 or stoch > 4):
-    print("Please choose a valid model")
-    exit()
 
 plt.title("Projekt 2")
 plt.grid()
